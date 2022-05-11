@@ -37,10 +37,11 @@ userSchema.pre('save', function(next){
 
     if (user.isModified('password')) {
         //비밀번호를 암호화 시킨다.
+        //salt를 생성
         bcrypt.genSalt(saltRounds, function(err, salt){
             if (err) 
                 return next(err);
-            
+            //salt로 암호화
             bcrypt.hash(user.password, salt, function(err, hash){
                 if (err) 
                     return next(err);
@@ -56,7 +57,7 @@ userSchema.pre('save', function(next){
 
 userSchema.methods.comparePassword = function(plainPassword, cb){
 
-    //plainPassword 
+    //plainPassword 와 암호화된 DB상 비밀번호 비교
     bcrypt.compare(plainPassword, this.password, function(err, isMatch){
         if(err) return cb(err);
         cb(null, isMatch);
