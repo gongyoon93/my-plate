@@ -4,9 +4,13 @@ const port = 5000
 
 const bodyParser = require('body-parser');
 
+const cookeParser = require('cookie-parser');
+
 const config = require('./config/key');
 
 const { User } = require('./models/Users');
+
+app.use(cookeParser());
 
 //client에서 보낸 application/x-www-form-urlencoded를 분석해서 가져옴
 app.use(bodyParser.urlencoded({extend: true}));
@@ -55,10 +59,18 @@ app.post('/login', (req, res) => {
     //요청된 이메일이 DB에 있다면 비밀번호가 맞는 비밀번호인지 확인.
 
     user.comparePassword(req.body.password, (err, isMatch) => {
+        if(err) console.log(err);
         if(!isMatch)
         return res.json({loginSuccess: false, message: "비밀번호가 틀렸습니다."});
 
-        user.generateToken((err, user) => {});
+        user.generateToken((err, user) => {
+          if(err) return res.status(400).send(err);
+
+          //토큰을 저장함(쿠키)
+          res.cookie("x_auth",user.token)
+          .status(200)
+          .json({loginSuccess: true, userId: user._id});
+        });
     })
   });
 
