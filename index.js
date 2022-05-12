@@ -4,15 +4,15 @@ const port = 5000
 
 const bodyParser = require('body-parser');
 
-const cookeParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 
 const config = require('./config/key');
 
 const { auth } = require('./middleware/auth');
 
-const { User } = require('./models/Users');
+const { User } = require('./models/User');
 
-app.use(cookeParser());
+app.use(cookieParser());
 
 //client에서 보낸 application/x-www-form-urlencoded를 분석해서 가져옴
 app.use(bodyParser.urlencoded({extend: true}));
@@ -78,10 +78,10 @@ app.post('/api/users/login', (req, res) => {
 
 });
 
-app.get('api/users/auth', auth, (req, res) => {
+app.get('/api/users/auth', auth, (req, res) => {
     //여기까지 미들웨어를 통과해 왔다는건 Authentication이 True
     res.status(200).json({
-      _id: req.user_id,
+      _id: req.user._id,
       isAdmin: req.user.role === 0 ? false : true,
       email: req.user.email,
       name: req.user.name,
@@ -89,6 +89,18 @@ app.get('api/users/auth', auth, (req, res) => {
       role: req.user.role,
       image: req.user.image
     });
+});
+
+app.get('/api/users/logout', auth, (req, res) => {
+    User.findOneAndUpdate({_id: req.user._id},
+      { token: ""},
+      (err, user) => {
+        if(err) return res.json({sucess: false, err});
+        return res.status(200).send({
+          success: true
+        });
+      }
+      )
 });
 
 app.listen(port, () => {
