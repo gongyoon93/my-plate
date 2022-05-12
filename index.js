@@ -8,6 +8,8 @@ const cookeParser = require('cookie-parser');
 
 const config = require('./config/key');
 
+const { auth } = require('./middleware/auth');
+
 const { User } = require('./models/Users');
 
 app.use(cookeParser());
@@ -29,7 +31,7 @@ app.get('/', (req, res) => {
   res.send('Hi everyone')
 })
 
-app.post('/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
 
   // 회원가입시 필요한 정보들을 client에 서 가져오면
   // DB에 저장
@@ -45,7 +47,7 @@ app.post('/register', (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
    
   //요청된 이메일을 DB에서 있는지 찾는다.
   User.findOne({email: req.body.email}, (err, user) => {
@@ -74,7 +76,19 @@ app.post('/login', (req, res) => {
     })
   });
 
+});
 
+app.get('api/users/auth', auth, (req, res) => {
+    //여기까지 미들웨어를 통과해 왔다는건 Authentication이 True
+    res.status(200).json({
+      _id: req.user_id,
+      isAdmin: req.user.role === 0 ? false : true,
+      email: req.user.email,
+      name: req.user.name,
+      lastname: req.user.lastname,
+      role: req.user.role,
+      image: req.user.image
+    });
 });
 
 app.listen(port, () => {
