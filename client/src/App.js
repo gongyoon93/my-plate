@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
 } from "react-router-dom";
 
 import LandingPage from "./components/views/LandingPage/Landingpage";
@@ -15,7 +14,6 @@ function App() {
   return (
     <Router>
       <div>
-      
         <Routes>
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
