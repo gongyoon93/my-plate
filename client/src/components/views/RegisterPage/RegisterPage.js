@@ -29,6 +29,10 @@ function RegisterPage() {
     setConfirmPassword(event.currentTarget.value);
  };
 
+ const goBack = () => {
+  navigate('/login');
+};
+
   const onSubmitHandler = (event) => {
     event.preventDefault();
 
@@ -75,7 +79,11 @@ function RegisterPage() {
         <input type="password" value={ConfirmPassword} onChange={onConfirmPwHandler} />
         <br />
         <button type="submit">
-          회원 가입
+          회원 가입 신청
+        </button>
+        <br />
+        <button onClick={goBack}>
+          뒤로 가기
         </button>
       </form>
     </div>

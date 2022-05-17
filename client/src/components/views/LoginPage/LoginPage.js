@@ -18,6 +18,10 @@ function LoginPage() {
     setPassword(event.currentTarget.value);
  };
 
+ const goRegister = () => {
+  navigate('/register');
+};
+
   const onSubmitHandler = (event) => {
     event.preventDefault();
 
@@ -54,7 +58,11 @@ function LoginPage() {
         <input type="password" value={Password} onChange={onPwHandler} />
         <br />
         <button type="submit">
-          Login
+          로그인
+        </button>
+        <br />
+        <button onClick={goRegister}>
+          회원 가입
         </button>
       </form>
     </div>
